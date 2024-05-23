@@ -2,7 +2,7 @@ name: Scheduled Job
 
 on:
   schedule:
-    # Runs at midnight every day
+    # Runs at 4 PM every day
     - cron: '0 16 * * *'
 
 jobs:
@@ -10,9 +10,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
+    - name: Checkout primary repository
       uses: actions/checkout@v2
+      with:
+        path: primary-repo
       
+    - name: Checkout secondary repository
+      uses: actions/checkout@v2
+      with:
+        repository: rtchamna/TED_Pipeline
+        path: secondary-repo
+    
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
@@ -20,8 +28,10 @@ jobs:
 
     - name: Install dependencies
       run: |
-        pip install -r requirements.txt
+        pip install -r primary-repo/requirements.txt
+        pip install -r secondary-repo/requirements.txt
 
     - name: Run script
       run: |
+        cd secondary-repo
         python 0_main_global.py
