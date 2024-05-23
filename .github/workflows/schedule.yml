@@ -1,9 +1,9 @@
 name: Scheduled Job
 
 on:
-  schedule:
-    # Runs at 4:08 PM EDT (8:08 PM UTC) every day
-    - cron: '11 20 * * *'
+  push:
+    branches:
+      - main
 
 jobs:
   build:
@@ -14,13 +14,13 @@ jobs:
       uses: actions/checkout@v2
       with:
         path: primary-repo
-      
+
     - name: Checkout secondary repository
       uses: actions/checkout@v2
       with:
         repository: rtchamna/TED_Pipeline
         path: secondary-repo
-    
+
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
