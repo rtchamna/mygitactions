@@ -1,9 +1,10 @@
 name: Scheduled Job
 
 on:
-  push:
-    branches:
-      - master
+  schedule:
+    # Runs at 8:08 PM UTC (4:08 PM EDT) every day
+    - cron: '8 27 * * *'
+  workflow_dispatch:
 
 jobs:
   build:
@@ -19,8 +20,8 @@ jobs:
       uses: actions/checkout@v2
       with:
         repository: rtchamna/TED_Pipeline
-        path: secondary-repo
-
+        token: ${{ secrets.ACTIONS_PAT }}
+    
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
