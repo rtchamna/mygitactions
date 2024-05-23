@@ -2,8 +2,8 @@ name: Scheduled Job
 
 on:
   schedule:
-    # Runs at 8:08 PM UTC (4:08 PM EDT) every day
-    - cron: '28 20 * * *'
+    # Runs at 8:27 PM UTC (4:27 PM EDT) every day
+    - cron: '27 20 * * *'
   workflow_dispatch:
 
 jobs:
@@ -20,14 +20,15 @@ jobs:
       uses: actions/checkout@v2
       with:
         repository: rtchamna/TED_Pipeline
+        path: secondary-repo
         token: ${{ secrets.ACTIONS_PAT }}
-    
+
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
         python-version: '3.x'
 
-    - name: Install dependencies
+    - name: Install dependencies from secondary repo
       run: |
         pip install -r secondary-repo/requirements.txt
 
