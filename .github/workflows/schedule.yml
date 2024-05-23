@@ -29,7 +29,6 @@ jobs:
 
     - name: Install dependencies
       run: |
-        pip install -r primary-repo/requirements.txt
         pip install -r secondary-repo/requirements.txt
 
     - name: Run script
