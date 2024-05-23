@@ -2,8 +2,8 @@ name: Scheduled Job
 
 on:
   schedule:
-    # Runs at 4 PM every day
-    - cron: '8 16 * * *'
+    # Runs at 4:08 PM EDT (8:08 PM UTC) every day
+    - cron: '11 20 * * *'
 
 jobs:
   build:
