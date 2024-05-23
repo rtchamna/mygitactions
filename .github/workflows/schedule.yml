@@ -3,7 +3,7 @@ name: Scheduled Job
 on:
   schedule:
     # Runs at 4 PM every day
-    - cron: '0 16 * * *'
+    - cron: '6 20 * * *'
 
 jobs:
   build:
