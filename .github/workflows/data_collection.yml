@@ -24,6 +24,6 @@ jobs:
     - name: Copy entire secondary-repo
       run: |
         # Create destination directory if it doesn't exist
-        mkdir -p /path/to/destination
+        mkdir -p Gen_Results
         # Copy everything from secondary-repo to the destination
-        cp -r secondary-repo/* /path/to/destination
+        cp -r secondary-repo/* Gen_Results
