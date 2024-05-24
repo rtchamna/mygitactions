@@ -18,6 +18,9 @@ jobs:
       with:
         python-version: '3.x'
 
+    - name: List files in the repository
+      run: ls -R
+
     - name: Duplicate the repository
       env:
         ACTIONS_PAT: ${{ secrets.ACTIONS_PAT }}
@@ -29,7 +32,7 @@ jobs:
 
         # Create the replicated repository using GitHub API
         curl -H "Authorization: token $ACTIONS_PAT" \
-          -d '{"name": "'$REPLICATE_NAME'"}' \
+          -d '{"name": "'$REPLICATE_NAME'", "private": true}' \
           https://api.github.com/user/repos
 
         # Clone the repository using the token
@@ -40,7 +43,12 @@ jobs:
 
     - name: Run the main script
       run: |
-        python 0_main_global.py
+        if [ -f "./0_main_global.py" ]; then
+          python 0_main_global.py
+        else
+          echo "0_main_global.py not found in the root directory"
+          exit 1
+        fi
       env:
         REPO_NAME: ${{ github.event.repository.name }}
         REPLICATE_NAME: ${{ env.REPLICATE_NAME }}
