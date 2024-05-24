@@ -50,21 +50,21 @@ jobs:
           exit 1
         fi
       env:
-        REPO_NAME: ${{ github.event.repository.name }}
-        REPLICATE_NAME: ${{ env.REPLICATE_NAME }}
+        REPO_NAME: "TED_Pipeline"
+        REPLICATE_NAME: "TED_Pipeline_replicate"
 
     - name: Prepare for artifact upload
       run: |
         mkdir -p artifacts
         mv output/* artifacts/  # Adjust the path to your artifacts as needed
       env:
-        REPO_NAME: ${{ github.event.repository.name }}
-        REPLICATE_NAME: ${{ env.REPLICATE_NAME }}
+        REPO_NAME: "TED_Pipeline"
+        REPLICATE_NAME: "TED_Pipeline_replicate"
 
     - name: Checkout the replicated repository
       uses: actions/checkout@v2
       with:
-        repository: ${{ env.TARGET_USER }}/${{ env.REPLICATE_NAME }}
+        repository: rtchamna/TED_Pipeline_replicate
         token: ${{ secrets.ACTIONS_PAT }}
         path: replicate_repo
 
