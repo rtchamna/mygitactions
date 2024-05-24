@@ -48,7 +48,7 @@ jobs:
     - name: Checkout the replicated repository
       uses: actions/checkout@v2
       with:
-        repository: rtchamna/TED_Pipeline
+        repository: rtchamna/TED_Pipeline_replicate
         path: replicate_repo
         token: ${{ secrets.ACTIONS_PAT }}
         
