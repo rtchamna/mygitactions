@@ -18,7 +18,6 @@ jobs:
       with:
         python-version: '3.x'
 
-
     - name: Duplicate the repository
       env:
         ACTIONS_PAT: ${{ secrets.ACTIONS_PAT }}
@@ -39,22 +38,22 @@ jobs:
         git remote set-url --push origin https://$ACTIONS_PAT@github.com/${TARGET_USER}/${REPLICATE_NAME}.git
         git push --mirror
 
-    - name: Run the main script
-      run: |
-        cd TED_Pipeline  # Change to the directory containing the script if necessary
-        python 0_main_global.py
-
-    - name: Prepare for artifact upload
-      run: |
-        mkdir -p artifacts
-        mv output/* artifacts/  # Adjust the path to your artifacts as needed
-
     - name: Checkout the replicated repository
       uses: actions/checkout@v2
       with:
         repository: rtchamna/${REPLICATE_NAME}
         token: ${{ secrets.ACTIONS_PAT }}
         path: replicate_repo
+
+    - name: Run the main script
+      run: |
+        cd replicate_repo  # Change to the directory containing the replicated repository
+        python 0_main_global.py
+
+    - name: Prepare for artifact upload
+      run: |
+        mkdir -p artifacts
+        mv output/* artifacts/  # Adjust the path to your artifacts as needed
 
     - name: Copy artifacts to replicated repository
       run: |
