@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout the repository
+    - name: Checkout the original repository
       uses: actions/checkout@v2
 
     - name: Set up Python
@@ -32,11 +32,17 @@ jobs:
           -d '{"name": "'$REPLICATE_NAME'", "private": true}' \
           https://api.github.com/user/repos
 
-        # Clone the repository using the token
+        # Clone the original repository
         git clone https://$ACTIONS_PAT@github.com/${USER_NAME}/${REPO_NAME}.git
         cd ${REPO_NAME}
+        
+        # Push to the new replicated repository
         git remote set-url origin https://$ACTIONS_PAT@github.com/${TARGET_USER}/${REPLICATE_NAME}.git
         git push --set-upstream origin master
+        
+        # Create and push the main branch in the new replicated repository
+        git checkout -b main
+        git push origin main
 
     - name: Checkout the replicated repository
       uses: actions/checkout@v2
@@ -44,12 +50,6 @@ jobs:
         repository: rtchamna/${REPLICATE_NAME}
         token: ${{ secrets.ACTIONS_PAT }}
         path: replicate_repo
-
-    - name: Initialize default branch in the replicated repository
-      run: |
-        cd replicate_repo
-        git checkout -b main
-        git push origin main
 
     - name: Install dependencies
       run: |
