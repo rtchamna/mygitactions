@@ -33,10 +33,26 @@ jobs:
           https://api.github.com/user/repos
 
         # Clone the repository using the token
-        git clone --mirror https://$ACTIONS_PAT@github.com/${USER_NAME}/${REPO_NAME}.git
-        cd ${REPO_NAME}.git
-        git remote set-url --push origin https://$ACTIONS_PAT@github.com/${TARGET_USER}/${REPLICATE_NAME}.git
-        git push --mirror
+        git clone https://$ACTIONS_PAT@github.com/${USER_NAME}/${REPO_NAME}.git
+        cd ${REPO_NAME}
+        git remote set-url origin https://$ACTIONS_PAT@github.com/${TARGET_USER}/${REPLICATE_NAME}.git
+        git push --set-upstream origin master
+
+    - name: Initialize default branch in the replicated repository
+      run: |
+        cd ${REPO_NAME}
+        git checkout -b main
+        git push origin main
+
+    - name: Run the main script
+      run: |
+        cd ${REPO_NAME}
+        python 0_main_global.py
+
+    - name: Prepare for artifact upload
+      run: |
+        mkdir -p artifacts
+        mv output/* artifacts/  # Adjust the path to your artifacts as needed
 
     - name: Checkout the replicated repository
       uses: actions/checkout@v2
@@ -44,22 +60,6 @@ jobs:
         repository: rtchamna/${REPLICATE_NAME}
         token: ${{ secrets.ACTIONS_PAT }}
         path: replicate_repo
-
-    - name: Initialize default branch in the replicated repository
-      run: |
-        cd replicate_repo
-        git checkout -b main
-        git push origin main
-
-    - name: Run the main script
-      run: |
-        cd replicate_repo
-        python 0_main_global.py
-
-    - name: Prepare for artifact upload
-      run: |
-        mkdir -p artifacts
-        mv output/* artifacts/  # Adjust the path to your artifacts as needed
 
     - name: Copy artifacts to replicated repository
       run: |
