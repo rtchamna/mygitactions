@@ -39,17 +39,25 @@ jobs:
         # Push to the new replicated repository
         git remote set-url origin https://$ACTIONS_PAT@github.com/${TARGET_USER}/${REPLICATE_NAME}.git
         git push --set-upstream origin master
-        
-        # Create and push the main branch in the new replicated repository
-        git checkout -b main
-        git push origin main
+
+    - name: Checkout primary repository
+      uses: actions/checkout@v2
+      with:
+        path: primary-repo
 
     - name: Checkout the replicated repository
       uses: actions/checkout@v2
       with:
-        repository: rtchamna/${REPLICATE_NAME}
-        token: ${{ secrets.ACTIONS_PAT }}
+        repository: rtchamna/TED_Pipeline
         path: replicate_repo
+        token: ${{ secrets.ACTIONS_PAT }}
+        
+    # - name: Checkout the replicated repository
+    #   uses: actions/checkout@v2
+    #   with:
+    #     repository: rtchamna/${REPLICATE_NAME}
+    #     token: ${{ secrets.ACTIONS_PAT }}
+    #     path: replicate_repo
 
     - name: Install dependencies
       run: |
