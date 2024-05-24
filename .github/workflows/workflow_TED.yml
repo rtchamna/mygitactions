@@ -18,11 +18,6 @@ jobs:
       with:
         python-version: '3.x'
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-
     - name: Duplicate the repository
       env:
         ACTIONS_PAT: ${{ secrets.ACTIONS_PAT }}
@@ -43,30 +38,34 @@ jobs:
         git remote set-url origin https://$ACTIONS_PAT@github.com/${TARGET_USER}/${REPLICATE_NAME}.git
         git push --set-upstream origin master
 
-    - name: Initialize default branch in the replicated repository
-      run: |
-        REPO_NAME="TED_Pipeline"
-        cd ${REPO_NAME}
-        git checkout -b main
-        git push origin main
-
-    - name: Run the main script
-      run: |
-        REPO_NAME="TED_Pipeline"
-        cd ${REPO_NAME}
-        python 0_main_global.py
-
-    - name: Prepare for artifact upload
-      run: |
-        mkdir -p artifacts
-        mv ${REPO_NAME}/output/* artifacts/  # Adjust the path to your artifacts as needed
-
     - name: Checkout the replicated repository
       uses: actions/checkout@v2
       with:
         repository: rtchamna/${REPLICATE_NAME}
         token: ${{ secrets.ACTIONS_PAT }}
         path: replicate_repo
+
+    - name: Initialize default branch in the replicated repository
+      run: |
+        cd replicate_repo
+        git checkout -b main
+        git push origin main
+
+    - name: Install dependencies
+      run: |
+        cd replicate_repo
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Run the main script
+      run: |
+        cd replicate_repo
+        python 0_main_global.py
+
+    - name: Prepare for artifact upload
+      run: |
+        mkdir -p artifacts
+        mv replicate_repo/output/* artifacts/  # Adjust the path to your artifacts as needed
 
     - name: Copy artifacts to replicated repository
       run: |
