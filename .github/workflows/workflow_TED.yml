@@ -19,6 +19,8 @@ jobs:
         python-version: '3.x'
 
     - name: Duplicate the repository
+      env:
+        ACTIONS_PAT: ${{ secrets.ACTIONS_PAT }}
       run: |
         REPO_NAME="TED_Pipeline"
         REPLICATE_NAME="${REPO_NAME}_replicate"
@@ -26,14 +28,14 @@ jobs:
         TARGET_USER="rtchamna"
 
         # Create the replicated repository using GitHub API
-        curl -H "Authorization: token ${{ secrets.GH_TOKEN }}" \
+        curl -H "Authorization: token $ACTIONS_PAT" \
           -d '{"name": "'$REPLICATE_NAME'"}' \
           https://api.github.com/user/repos
 
-        # Mirror the repository
-        git clone --mirror https://github.com/${USER_NAME}/${REPO_NAME}.git
+        # Clone the repository using the token
+        git clone --mirror https://$ACTIONS_PAT@github.com/${USER_NAME}/${REPO_NAME}.git
         cd ${REPO_NAME}.git
-        git remote set-url --push origin https://github.com/${TARGET_USER}/${REPLICATE_NAME}.git
+        git remote set-url --push origin https://$ACTIONS_PAT@github.com/${TARGET_USER}/${REPLICATE_NAME}.git
         git push --mirror
 
     - name: Run the main script
@@ -55,7 +57,7 @@ jobs:
       uses: actions/checkout@v2
       with:
         repository: ${{ env.TARGET_USER }}/${{ env.REPLICATE_NAME }}
-        token: ${{ secrets.GH_TOKEN }}
+        token: ${{ secrets.ACTIONS_PAT }}
         path: replicate_repo
 
     - name: Copy artifacts to replicated repository
