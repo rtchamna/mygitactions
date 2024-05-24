@@ -45,9 +45,15 @@ jobs:
         token: ${{ secrets.ACTIONS_PAT }}
         path: replicate_repo
 
+    - name: Initialize default branch in the replicated repository
+      run: |
+        cd replicate_repo
+        git checkout -b main
+        git push origin main
+
     - name: Run the main script
       run: |
-        cd replicate_repo  # Change to the directory containing the replicated repository
+        cd replicate_repo
         python 0_main_global.py
 
     - name: Prepare for artifact upload
