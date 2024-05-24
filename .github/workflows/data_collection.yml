@@ -1,0 +1,29 @@
+name: Data Collection Workflow
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  collect-data:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout main repository
+      uses: actions/checkout@v2
+      
+    - name: Checkout secondary repository
+      uses: actions/checkout@v2
+      with:
+        repository: rtchamna/TED_Pipeline
+        path: secondary-repo
+        token: ${{ secrets.ACTIONS_PAT }}
+      
+    - name: Copy entire secondary-repo
+      run: |
+        # Create destination directory if it doesn't exist
+        mkdir -p /path/to/destination
+        # Copy everything from secondary-repo to the destination
+        cp -r secondary-repo/* /path/to/destination
