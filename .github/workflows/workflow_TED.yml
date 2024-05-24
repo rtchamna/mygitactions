@@ -43,15 +43,7 @@ jobs:
 
     - name: Run the main script
       run: |
-        if [ -f "./0_main_global.py" ]; then
-          python 0_main_global.py
-        else
-          echo "0_main_global.py not found in the root directory"
-          exit 1
-        fi
-      env:
-        REPO_NAME: "TED_Pipeline"
-        REPLICATE_NAME: "TED_Pipeline_replicate"
+        python 0_main_global.py
 
     - name: Prepare for artifact upload
       run: |
