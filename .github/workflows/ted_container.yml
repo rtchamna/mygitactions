@@ -31,7 +31,7 @@ jobs:
         run: |
           git clone https://github.com/rtchamna/TED_Pipeline_replicate.git
           cd TED_Pipeline_replicate
-          git checkout -b container
+          git checkout -b master
 
       - name: Copy data from container to the replicate repository
         run: |
