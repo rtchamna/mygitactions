@@ -25,6 +25,10 @@ jobs:
 
     - name: Pull Docker image
       run: docker pull ghcr.io/rtchamna/ted_pipeline:latest
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Run Docker container
       run: docker run ghcr.io/rtchamna/ted_pipeline:latest
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
