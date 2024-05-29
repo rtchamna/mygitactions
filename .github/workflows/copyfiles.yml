@@ -26,7 +26,7 @@ jobs:
 
       - name: Commit and push folders to another repository
         env:
-          REPO: github.com/rtchamna/TED_Pipeline_replicate.git
+          REPO: rtchamna/TED_Pipeline_replicate.git
           BRANCH: master
           FOLDER: TED_Results_From_Container  # This should match the created folder
           PAT: ${{ secrets.ACTION_PAT }}
@@ -35,9 +35,9 @@ jobs:
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           
           # Clone the destination repository
-          git clone --branch $BRANCH https://$PAT@$REPO destination-repo
+          git clone --branch $BRANCH https://$PAT@github.com/$REPO
 
-          cd destination-repo
+          cd TED_Pipeline_replicate
   
           # Copy the folders to the destination repository
           cp -r ../$FOLDER .
