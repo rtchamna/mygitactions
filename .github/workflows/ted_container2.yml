@@ -45,4 +45,4 @@ jobs:
           git commit -m "Update results from Docker container"
           git push origin master  # Change to your main branch
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ACTIONS_PAT: ${{ secrets.ACTIONS_PAT }}
