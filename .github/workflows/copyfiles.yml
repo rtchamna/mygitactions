@@ -29,14 +29,13 @@ jobs:
         ls -R TED_Pipeline_replicate/TED_Results_From_Container  # Debugging: List contents to verify copy
 
     - name: Commit and push results to the replicate repository
+      working-directory: TED_Pipeline_replicate
       run: |
-        cd TED_Pipeline_replicate
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
         git add -f TED_Results_From_Container  # Force add ignored files
         git commit -m 'Update results from container run'
         git push origin master
-      working-directory: TED_Pipeline_replicate
 
     - name: Clean up dummy container
       run: |
