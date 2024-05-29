@@ -29,9 +29,10 @@ jobs:
           git config --global user.email "${{ github.actor }}@users.noreply.github.com"
 
       - name: Commit and push changes
+        env:
+          ACTIONS_PAT: ${{ secrets.ACTIONS_PAT }}
         run: |
           git add TED_Results_From_Container
           git commit -m "Add dummy file for testing"
+          git remote set-url origin https://x-access-token:${{ secrets.ACTIONS_PAT }}@github.com/${{ github.repository }}
           git push origin master  # Change to your main branch
-        env:
-          ACTIONS_PAT: ${{ secrets.ACTIONS_PAT }}
