@@ -33,7 +33,7 @@ jobs:
         cd TED_Pipeline_replicate
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-        git add TED_Results_From_Container
+        git add TED_Results_From_Container/Figures
         git commit -m 'Update results from container run'
         git push origin master
 
