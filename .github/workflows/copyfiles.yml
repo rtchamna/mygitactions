@@ -26,7 +26,7 @@ jobs:
 
       - name: Commit and push folders to another repository
         env:
-          REPO: https://github.com/rtchamna/TED_Pipeline_replicate.git
+          REPO: github.com/rtchamna/TED_Pipeline_replicate.git
           BRANCH: master
           FOLDER: TED_Results_From_Container  # This should match the created folder
           PAT: ${{ secrets.ACTION_PAT }}
