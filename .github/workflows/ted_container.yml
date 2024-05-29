@@ -1,45 +1,48 @@
-name: Copy Files from Docker Container
+name: Run Container and Copy Data
 
 on:
+  schedule:
+    - cron: "0 7 * * *"
   workflow_dispatch:
 
 jobs:
-  copy-files:
+  run-container:
     runs-on: ubuntu-latest
-
+    
     steps:
-    - name: Checkout TED_Pipeline_replicate repository
-      uses: actions/checkout@v2
-      with:
-        repository: rtchamna/TED_Pipeline_replicate
-        token: ${{ secrets.ACTIONS_PAT }}
-        ref: master
+      - name: Checkout the main repository
+        uses: actions/checkout@v3
+        with:
+          ref: master  # Change to your main branch
 
-    - name: Create a dummy container with sample data
-      run: |
-        echo "FROM alpine:latest" > Dockerfile
-        echo "RUN mkdir -p /app/Figures && echo 'sample data' > /app/Figures/sample.txt" >> Dockerfile
-        docker build -t dummy-container .
-        docker run -d --name ted-pipeline-container dummy-container
+      - name: Login to GitHub Container Registry
+        run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
-    - name: Copy data from dummy container to the replicate repository
-      run: |
-        mkdir -p TED_Pipeline_replicate/TED_Results_From_Container
-        docker cp ted-pipeline-container:/app/Figures TED_Pipeline_replicate/TED_Results_From_Container
-        ls -R TED_Pipeline_replicate/TED_Results_From_Container  # Debugging: List contents to verify copy
+      - name: Pull the Docker image
+        run: docker pull ghcr.io/rtchamna/ted_pipeline:latest
 
-    - name: Commit and push results to the replicate repository
-      working-directory: TED_Pipeline_replicate
-      run: |
-        git config --global user.name 'github-actions[bot]'
-        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-        git add -f TED_Results_From_Container  # Force add ignored files
-        git commit -m 'Update results from container run'
-        git push origin master
+      - name: Run the Docker container
+        run: docker run -d --name ted-pipeline-container ghcr.io/rtchamna/ted_pipeline:latest
 
-    - name: Clean up dummy container
-      run: |
-        docker stop ted-pipeline-container
-        docker rm ted-pipeline-container
-        docker rmi dummy-container
-        rm Dockerfile
+      - name: Wait for container to finish
+        run: docker wait ted-pipeline-container
+
+      - name: Copy data from container to the repository
+        run: |
+          mkdir -p TED_Pipeline_replicate/TED_Results_From_Container
+          docker cp ted-pipeline-container:/app/Figures TED_Pipeline_replicate/TED_Results_From_Container
+          ls -R TED_Pipeline_replicate/TED_Results_From_Container  # Debugging: List contents to verify copy
+
+      - name: Commit and push results to the repository
+        run: |
+          cd TED_Pipeline_replicate
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add -f TED_Results_From_Container/Figures  # Force add ignored files
+          git commit -m 'Update results from container run'
+          git push origin master
+
+      - name: Clean up container
+        run: |
+          docker stop ted-pipeline-container
+          docker rm ted-pipeline-container
