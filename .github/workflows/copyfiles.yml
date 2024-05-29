@@ -24,4 +24,26 @@ jobs:
       - name: List contents for debugging
         run: ls -R TED_Results_From_Container
 
-      
+      - name: Commit and push folders to another repository
+        env:
+          REPO: https://github.com/rtchamna/TED_Pipeline_replicate.git
+          BRANCH: master
+          FOLDER: TED_Results_From_Container  # This should match the created folder
+          PAT: ${{ secrets.ACTION_PAT }}
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          
+          # Clone the destination repository
+          git clone --branch $BRANCH https://$PAT@$REPO
+          cd destination-repo
+  
+          # Copy the folders to the destination repository
+          cp -r ../$FOLDER .
+  
+          # Add and commit changes
+          git add .
+          git commit -m "Automated commit from GitHub Actions"
+  
+          # Push changes
+          git push origin $BRANCH
