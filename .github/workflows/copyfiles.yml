@@ -15,11 +15,14 @@ jobs:
         token: ${{ secrets.ACTIONS_PAT }}
         ref: master
 
-    - name: Start Docker container
+    - name: Create a dummy container with sample data
       run: |
-        docker start ted-pipeline-container
+        echo "FROM alpine:latest" > Dockerfile
+        echo "RUN mkdir -p /app/Figures && echo 'sample data' > /app/Figures/sample.txt" >> Dockerfile
+        docker build -t dummy-container .
+        docker run -d --name ted-pipeline-container dummy-container
 
-    - name: Copy data from container to the replicate repository
+    - name: Copy data from dummy container to the replicate repository
       run: |
         mkdir -p TED_Pipeline_replicate/TED_Results_From_Container
         docker cp ted-pipeline-container:/app/Figures TED_Pipeline_replicate/TED_Results_From_Container
@@ -32,3 +35,10 @@ jobs:
         git add TED_Results_From_Container
         git commit -m 'Update results from container run'
         git push origin master
+
+    - name: Clean up dummy container
+      run: |
+        docker stop ted-pipeline-container
+        docker rm ted-pipeline-container
+        docker rmi dummy-container
+        rm Dockerfile
