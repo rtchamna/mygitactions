@@ -9,10 +9,17 @@ jobs:
 
     steps:
     - name: Checkout TED_Pipeline_replicate repository
+      env:
+        GH_PAT: ${{ secrets.GH_PAT }}
       run: |
         git clone https://github.com/rtchamna/TED_Pipeline_replicate.git
         cd TED_Pipeline_replicate
+        git remote set-url origin https://$GH_PAT@github.com/rtchamna/TED_Pipeline_replicate.git
         git checkout master  # Ensure you are on the master branch
+
+    - name: Start Docker container
+      run: |
+        docker start ted-pipeline-container
 
     - name: Copy data from container to the replicate repository
       run: |
