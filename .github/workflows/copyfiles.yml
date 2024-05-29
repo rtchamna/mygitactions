@@ -24,15 +24,4 @@ jobs:
       - name: List contents for debugging
         run: ls -R TED_Results_From_Container
 
-      - name: Configure Git
-        run: |
-          git config --global user.name "${{ github.actor }}"
-          git config --global user.email "${{ github.actor }}@users.noreply.github.com"
-
-      - name: Commit and push changes
-        env:
-          ACTIONS_PAT: ${{ secrets.ACTIONS_PAT }}
-        run: |
-          git add TED_Results_From_Container
-          git commit -m "Add dummy files for testing"
-          git push origin master
+      
