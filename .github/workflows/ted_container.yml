@@ -22,7 +22,12 @@ jobs:
         run: docker pull ghcr.io/rtchamna/ted_pipeline:latest
 
       - name: Run the Docker container
-        run: docker run -d --name ted-pipeline-container ghcr.io/rtchamna/ted_pipeline:latest
+        run: docker run --name ted-pipeline-container ghcr.io/rtchamna/ted_pipeline:latest
+
+      
+
+      - name: Check container logs (for debugging)
+        run: docker logs ted-pipeline-container
 
       - name: Copy data from container to the repository
         run: |
