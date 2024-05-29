@@ -15,23 +15,13 @@ jobs:
         with:
           ref: master  # Change to your main branch
 
-      - name: Login to GitHub Container Registry
-        run: echo ${{ secrets.ACTIONS_PAT }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-
-      - name: Pull the Docker image
-        run: docker pull ghcr.io/rtchamna/ted_pipeline:latest
-
-      - name: Run the Docker container
-        run: docker run --name ted-pipeline-container ghcr.io/rtchamna/ted_pipeline:latest
-
-      - name: Check container logs (for debugging)
-        run: docker logs ted-pipeline-container
-
-      - name: Copy data from container to the repository
+      - name: Create dummy file
         run: |
           mkdir -p TED_Results_From_Container
-          docker cp ted-pipeline-container:/app/Figures TED_Results_From_Container
-          ls -R TED_Results_From_Container  # Debugging: List contents to verify copy
+          echo "This is a test file" > TED_Results_From_Container/dummy_file.txt
+
+      - name: List contents for debugging
+        run: ls -R TED_Results_From_Container
 
       - name: Configure Git
         run: |
@@ -41,7 +31,7 @@ jobs:
       - name: Commit and push changes
         run: |
           git add TED_Results_From_Container
-          git commit -m "Update results from Docker container"
+          git commit -m "Add dummy file for testing"
           git push origin master  # Change to your main branch
         env:
           ACTIONS_PAT: ${{ secrets.ACTIONS_PAT }}
