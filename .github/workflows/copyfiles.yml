@@ -35,7 +35,8 @@ jobs:
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           
           # Clone the destination repository
-          git clone --branch $BRANCH https://$PAT@$REPO
+          git clone --branch $BRANCH https://$PAT@$REPO destination-repo
+
           cd destination-repo
   
           # Copy the folders to the destination repository
