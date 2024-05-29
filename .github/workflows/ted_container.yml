@@ -16,7 +16,7 @@ jobs:
           ref: master  # Change to your main branch
 
       - name: Login to GitHub Container Registry
-        run: echo ${{ secrets.GH_PAT }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+        run: echo ${{ secrets.ACTIONS_PAT }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Pull the Docker image
         run: docker pull ghcr.io/rtchamna/ted_pipeline:latest
