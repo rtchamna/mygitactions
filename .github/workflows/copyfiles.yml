@@ -35,7 +35,7 @@ jobs:
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           
           # Clone the destination repository
-          git clone --branch $BRANCH https://$PAT@github.com/$REPO
+          git clone --branch $BRANCH https://github.com/rtchamna/TED_Pipeline_replicate.git
 
           cd TED_Pipeline_replicate
   
