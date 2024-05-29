@@ -15,40 +15,32 @@ jobs:
         token: ${{ secrets.ACTIONS_PAT }}
         ref: master
 
-    - name: Create a dummy container with sample data
-      run: |
-        echo "FROM alpine:latest" > Dockerfile
-        echo "RUN mkdir -p /app/Figures && echo 'sample data' > /app/Figures/sample.txt" >> Dockerfile
-        docker build -t dummy-container .
-        docker run -d --name ted-pipeline-container dummy-container
+    - name: Pull Docker image
+      run: docker pull ghcr.io/rtchamna/ted_pipeline:latest
 
-    - name: Copy data from dummy container to the replicate repository
+    - name: Run Docker container
+      id: run_container
+      run: docker run -d --name ted-pipeline-container ghcr.io/rtchamna/ted_pipeline:latest
+
+    - name: Wait for container to finish
+      run: docker wait ted-pipeline-container
+
+    - name: Copy data from container to the replicate repository
       run: |
         mkdir -p TED_Pipeline_replicate/TED_Results_From_Container
         docker cp ted-pipeline-container:/app/Figures TED_Pipeline_replicate/TED_Results_From_Container
         ls -R TED_Pipeline_replicate/TED_Results_From_Container  # Debugging: List contents to verify copy
 
-    - name: Check for changes
+    - name: Commit and push results to the replicate repository
       run: |
         cd TED_Pipeline_replicate
-        git status
-
-    - name: Commit and push results to the replicate repository
-      working-directory: TED_Pipeline_replicate
-      run: |
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-        if [[ $(git status --porcelain) ]]; then
-          git add -f TED_Results_From_Container  # Force add ignored files
-          git commit -m 'Update results from container run'
-          git push origin master
-        else
-          echo "No changes to commit"
-        fi
+        git add -f TED_Results_From_Container/Figures  # Force add ignored files
+        git commit -m 'Update results from container run'
+        git push origin master
 
-    - name: Clean up dummy container and Dockerfile
+    - name: Clean up container
       run: |
         docker stop ted-pipeline-container
         docker rm ted-pipeline-container
-        docker rmi dummy-container
-        rm Dockerfile
