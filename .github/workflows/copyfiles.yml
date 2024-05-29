@@ -26,6 +26,7 @@ jobs:
       run: |
         mkdir -p TED_Pipeline_replicate/TED_Results_From_Container
         docker cp ted-pipeline-container:/app/Figures TED_Pipeline_replicate/TED_Results_From_Container
+        ls -R TED_Pipeline_replicate/TED_Results_From_Container  # Debugging: List contents to verify copy
 
     - name: Commit and push results to the replicate repository
       run: |
