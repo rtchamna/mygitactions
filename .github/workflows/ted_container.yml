@@ -32,13 +32,13 @@ jobs:
 
       - name: Commit and push results to the repository
         env:
-          GH_PAT: ${{ secrets.GH_PAT }}
+          ACTIONS_PAT: ${{ secrets.ACTIONS_PAT }}
         run: |
           cd TED_Pipeline_replicate
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git remote set-url origin https://x-access-token:${{ secrets.GH_PAT }}@github.com/rtchamna/mygitactions.git
-          git add -f TED_Results_From_Container/Figures  # Force add ignored files
+          git remote set-url origin https://x-access-token:${{ secrets.ACTIONS_PAT }}@github.com/${{ github.repository }}
+          git add TED_Results_From_Container/Figures
           git commit -m 'Update results from container run'
           git push origin master
 
